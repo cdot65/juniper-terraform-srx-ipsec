@@ -1,13 +1,13 @@
 terraform {
   required_providers {
-    junos-ike = {
-      source  = "cdot65/junos-ike"
-      version = "0.0.1"
+    junos-ipsec = {
+      source  = "cdot65/junos-ipsec"
+      version = "0.0.2"
     }
   }
 }
 
-provider "junos-ike" {
+provider "junos-ipsec" {
   host     = var.juniper_host_name
   port     = var.juniper_ssh_port
   sshkey   = var.juniper_ssh_key
@@ -15,17 +15,17 @@ provider "junos-ike" {
   password = var.juniper_user_password
 }
 
-module "ike" {
-  source     = "./ike"
-  providers  = { junos-ike = junos-ike }
-  depends_on = [junos-ike_destroycommit.commit-main]
+module "ipsec" {
+  source     = "./ipsec"
+  providers  = { junos-ipsec = junos-ipsec }
+  depends_on = [junos-ipsec_destroycommit.commit-main]
 }
 
-resource "junos-ike_commit" "commit-main" {
+resource "junos-ipsec_commit" "commit-main" {
   resource_name = "commit"
-  depends_on    = [module.ike]
+  depends_on    = [module.ipsec]
 }
 
-resource "junos-ike_destroycommit" "commit-main" {
+resource "junos-ipsec_destroycommit" "commit-main" {
   resource_name = "destroycommit"
 }
